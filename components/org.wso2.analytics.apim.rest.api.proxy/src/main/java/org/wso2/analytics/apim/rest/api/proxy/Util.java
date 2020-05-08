@@ -17,15 +17,29 @@ package org.wso2.analytics.apim.rest.api.proxy;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.wso2.analytics.apim.rest.api.proxy.dto.ErrorDTO;
+import org.wso2.analytics.apim.rest.api.proxy.dto.UserClaimDTO;
+import org.wso2.analytics.apim.rest.api.proxy.dto.UserClaimListDTO;
 import org.wso2.analytics.apim.rest.api.proxy.exceptions.BadRequestException;
 import org.wso2.analytics.apim.rest.api.proxy.exceptions.InternalServerErrorException;
+import org.wso2.carbon.utils.StringUtils;
+
+import java.util.Arrays;
+import java.util.List;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 /**
  * Util class.
  */
 public class Util {
-    private final Log log = LogFactory.getLog(Util.class);
+    private static final Log log = LogFactory.getLog(Util.class);
     private static final long STATUS_BAD_REQUEST_MESSAGE_CODE = 400L;
     private static final String STATUS_BAD_REQUEST_MESSAGE = "Bad Request";
     private static final long STATUS_INTERNAL_SERVER_ERROR_CODE = 500L;
@@ -107,6 +121,38 @@ public class Util {
         errorDTO.setMessage(message);
         errorDTO.setDescription(description);
         return errorDTO;
+    }
+
+    public static UserClaimListDTO getUserClaimList(Document doc, String appOwner) throws XPathExpressionException {
+        XPathFactory xpathfactory = XPathFactory.newInstance();
+        XPath xpath = xpathfactory.newXPath();
+        xpath.setNamespaceContext(new NamespaceResolver(doc));
+        XPathExpression expr = xpath.compile("//ax2548:displayName");
+        Object result = expr.evaluate(doc, XPathConstants.NODESET);
+        NodeList nodes = (NodeList) result;
+        List<String> claimList = Arrays.asList("First Name", "Telephone", "Email", "Country");
+        UserClaimListDTO userClaimListDTO = new UserClaimListDTO();
+        UserClaimDTO appOwnerClaim = new UserClaimDTO();
+        appOwnerClaim.setName("Owner");
+        appOwnerClaim.setValue(appOwner);
+        userClaimListDTO.addListItem(appOwnerClaim);
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Element element = (Element) nodes.item(i).getParentNode();
+            if (claimList.contains(nodes.item(i).getTextContent())) {
+                String claimName = nodes.item(i).getTextContent();
+                NodeList nodeList = element.getElementsByTagName("ax2548:fieldValue");
+                if (nodeList.getLength() > 0) {
+                    String claimValue = nodeList.item(0).getTextContent();
+                    if (!StringUtils.isNullOrEmpty(claimValue)) {
+                        UserClaimDTO claimDTO = new UserClaimDTO();
+                        claimDTO.setName(claimName);
+                        claimDTO.setValue(claimValue);
+                        userClaimListDTO.addListItem(claimDTO);
+                    }
+                }
+            }
+        }
+        return userClaimListDTO;
     }
 
 

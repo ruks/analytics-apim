@@ -29,7 +29,11 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
+import Link from '@material-ui/core/Link';
 import CustomTableHead from './CustomTableHead';
+import AppInfoTitle from './AppInfoTitle';
+
 /**
  * Compare two values and return the result
  * @param {object} a - data field
@@ -88,6 +92,9 @@ const styles = theme => ({
     },
     table: {
         minWidth: 200,
+    },
+    tableTooltip: {
+        maxWidth: 'none',
     },
     tableWrapper: {
         overflowX: 'auto',
@@ -252,7 +259,18 @@ class CustomTable extends React.Component {
                                                 {n.apiVersion}
                                             </TableCell>
                                             <TableCell component='th' scope='row'>
-                                                {n.application}
+                                                <Tooltip
+                                                    title={
+                                                        (<AppInfoTitle appName={n.application} />)
+                                                    }
+                                                    placement='right-start'
+                                                    interactive
+                                                    classes={{ tooltip: classes.tableTooltip }}
+                                                >
+                                                    <Link href='#' style={{ color: '#FFF' }}>
+                                                        {n.application}
+                                                    </Link>
+                                                </Tooltip>
                                             </TableCell>
                                             <TableCell component='th' scope='row' numeric>
                                                 {n.usage}

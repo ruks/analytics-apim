@@ -201,6 +201,28 @@ class APIMApiUsageWidget extends Widget {
      * @memberof APIMApiUsageWidget
      * */
     handlePublisherParameters(receivedMsg) {
+        console.log("handlePublisherParameters");
+        console.log(receivedMsg);
+        if (receivedMsg.type && receivedMsg.type === 'apiInfo') {
+            const { api, version } = receivedMsg;
+            console.log(api);
+            console.log(version);
+            const event =  {
+                target: {
+                    value: api,
+                },
+            };
+            this.setState({ apiSelected: api, apiVersion: version }, this.apiSelectedHandleChange(event));
+            console.log("done");
+            // https://localhost:9643/analytics-dashboard/dashboards/apimpublisher/usage-summary#api_usage_by_application
+
+            const q = '#{"apiUsers":{"apiCreatedBy":"All","apiSelected":"' + api + '"}}';
+            // window.location = q;
+            console.log("location");
+            window.location = '#{%22apiUsers%22:{%22apiCreatedBy%22:%22All%22,%22apiSelected%22:%22PizzaShackAPI%22,%22apiVersion%22:%22All%22,%22limit%22:5}}';
+            return;
+        }
+
         const queryParam = super.getGlobalState('dtrp');
         const { sync } = queryParam;
 
@@ -389,6 +411,10 @@ class APIMApiUsageWidget extends Widget {
      * @memberof APIMApiUsageWidget
      * */
     setQueryParam(apiCreatedBy, apiSelected, apiVersion, limit) {
+        if (window.location.href.includes('#api_usage_by_application')) {
+            window.history.pushState(null, '', window.location.href.replace('#api_usage_by_application',''));
+            console.log(window.location);
+        }
         super.setGlobalState(queryParamKey, {
             apiCreatedBy,
             apiSelected,
@@ -440,7 +466,7 @@ class APIMApiUsageWidget extends Widget {
     apiSelectedHandleChange(event) {
         const { apiCreatedBy, limit } = this.state;
         const { id } = this.props;
-
+        console.log("event.target.value" + event.target.value);
         this.setQueryParam(apiCreatedBy, event.target.value, 'All', limit);
         this.setState({ inProgress: true });
         super.getWidgetChannelManager().unsubscribeWidget(id);

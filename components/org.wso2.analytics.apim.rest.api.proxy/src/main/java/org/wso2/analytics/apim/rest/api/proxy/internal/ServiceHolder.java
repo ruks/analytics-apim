@@ -16,11 +16,14 @@
 package org.wso2.analytics.apim.rest.api.proxy.internal;
 
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.config.ConfigurationException;
 import org.wso2.carbon.config.provider.ConfigProvider;
 import org.wso2.carbon.kernel.config.model.CarbonConfiguration;
+
+import javax.sql.DataSource;
 
 /**
  *  Service Holder class for this component.
@@ -30,6 +33,7 @@ public class ServiceHolder {
     private final Log log = LogFactory.getLog(ServiceHolder.class);
     private ConfigProvider configProvider;
     private CarbonConfiguration carbonConfiguration;
+    private DataSource dataSource = null;
 
     private ServiceHolder() {
     }
@@ -80,4 +84,11 @@ public class ServiceHolder {
         }
     }
 
+    public void setDataSource(HikariDataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public DataSource getDataSource() {
+        return this.dataSource;
+    }
 }

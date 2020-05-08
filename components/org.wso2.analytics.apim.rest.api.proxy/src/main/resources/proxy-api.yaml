@@ -59,9 +59,9 @@ produces:
 paths:
   /apim/apis:
 
-#--------------------------------------------------------------------------
-# Retrieve APIs list from the APIM server
-#--------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
+    # Retrieve APIs list from the APIM server
+    #--------------------------------------------------------------------------
     get:
       summary: |
         Retrieve the APIs list
@@ -81,14 +81,14 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-###########################################################################
-# The resource API to retrieve the Applications list from the APIM server
-###########################################################################
+  ###########################################################################
+  # The resource API to retrieve the Applications list from the APIM server
+  ###########################################################################
   /apim/applications:
 
-#--------------------------------------------------------------------------
-# Retrieve Applications list from the APIM server
-#--------------------------------------------------------------------------
+    #--------------------------------------------------------------------------
+    # Retrieve Applications list from the APIM server
+    #--------------------------------------------------------------------------
     get:
       summary: |
         Retrieve the Applications list
@@ -108,14 +108,43 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
+  /appinfo/{appname}:
+
+    #--------------------------------------------------------------------------
+    # Retrieve Applications list from the APIM server
+    #--------------------------------------------------------------------------
+    get:
+      summary: |
+        Retrieve the Applications list
+      description: |
+        Retrieve the Applications list from the APIM server
+      parameters:
+        - name: appname
+          in: path
+          description: Unique ID of the resource type.
+          required: true
+          type: string
+      responses:
+        200:
+          description: |
+            Ok.
+            REST API url successfully retrieved.
+          schema:
+            $ref: '#/definitions/ApplicationList'
+        400:
+          description: |
+            Bad Request.
+            Invalid request or validation error.
+          schema:
+            $ref: '#/definitions/Error'
 ###########################################################################
 # The resources used by some of the APIs above within the message body
 ###########################################################################
 definitions:
 
-#--------------------------------------------------------------------------
-# The API List resource
-#--------------------------------------------------------------------------
+  #--------------------------------------------------------------------------
+  # The API List resource
+  #--------------------------------------------------------------------------
   APIList:
     title: API List
     properties:
@@ -134,9 +163,9 @@ definitions:
           version: 1.0.0
           provider: admin
 
-#--------------------------------------------------------------------------
-# The API Info resource
-#--------------------------------------------------------------------------
+  #--------------------------------------------------------------------------
+  # The API Info resource
+  #--------------------------------------------------------------------------
   APIInfo:
     title: API Info object with basic API details.
     properties:
@@ -155,9 +184,9 @@ definitions:
         type: string
         example: admin
 
-#--------------------------------------------------------------------------
-# The Application List resource
-#--------------------------------------------------------------------------
+  #--------------------------------------------------------------------------
+  # The Application List resource
+  #--------------------------------------------------------------------------
   ApplicationList:
     title: Application List
     properties:
@@ -166,9 +195,9 @@ definitions:
         items:
           $ref: '#/definitions/ApplicationInfo'
 
-#--------------------------------------------------------------------------
-# The Application Info resource
-#--------------------------------------------------------------------------
+  #--------------------------------------------------------------------------
+  # The Application Info resource
+  #--------------------------------------------------------------------------
   ApplicationInfo:
     title: Application info object with basic application details
     properties:
@@ -182,9 +211,33 @@ definitions:
         type: string
         example: admin
 
-#--------------------------------------------------------------------------
-# The Error resource
-#--------------------------------------------------------------------------
+  #--------------------------------------------------------------------------
+  # The Application List resource
+  #--------------------------------------------------------------------------
+  UserClaimList:
+    title: UserClaim List
+    properties:
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/UserClaim'
+
+  #--------------------------------------------------------------------------
+  # The Application Info resource
+  #--------------------------------------------------------------------------
+  UserClaim:
+    title: UserClaim info object
+    properties:
+      name:
+        type: string
+        example: 01234567-0123-0123-0123-012345678901
+      value:
+        type: string
+        example: CalculatorApp
+
+  #--------------------------------------------------------------------------
+  # The Error resource
+  #--------------------------------------------------------------------------
   Error:
     title: Error object returned with 4XX HTTP lifeCycleStatus
     required:
@@ -213,9 +266,9 @@ definitions:
         items:
           $ref: '#/definitions/ErrorListItem'
 
-#--------------------------------------------------------------------------
-# The Error List Item resource
-#--------------------------------------------------------------------------
+  #--------------------------------------------------------------------------
+  # The Error List Item resource
+  #--------------------------------------------------------------------------
   ErrorListItem:
     title: Description of individual errors that may have occurred during a request.
     required:

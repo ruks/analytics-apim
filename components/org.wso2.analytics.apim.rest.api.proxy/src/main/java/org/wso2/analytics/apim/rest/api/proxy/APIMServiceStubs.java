@@ -15,6 +15,7 @@
  */
 package org.wso2.analytics.apim.rest.api.proxy;
 
+import feign.Body;
 import feign.Client;
 import feign.Feign;
 import feign.Headers;
@@ -66,6 +67,13 @@ public class APIMServiceStubs {
      */
     public interface PublisherServiceStub {
 
+        String PAYLOAD = "<soap:Envelope xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" "
+                + "xmlns:mgt=\"http://mgt.profile.user.identity.carbon.wso2.org\">\n"
+                + "   <soap:Header/>\n" + "   <soap:Body>\n" + "      <mgt:getUserProfile>\n"
+                + "         <mgt:username>{username}</mgt:username>\n"
+                + "         <mgt:profileName>default</mgt:profileName>\n" + "      </mgt:getUserProfile>\n"
+                + "   </soap:Body>\n" + "</soap:Envelope>";
+
         @Headers("Authorization: Bearer {auth_token}")
         @RequestLine("GET /apis?offset={offset}&limit={limit}")
         Response getApis(@Param("auth_token") String authToken, @Param("offset") int offset, @Param("limit") int limit);
@@ -74,6 +82,12 @@ public class APIMServiceStubs {
         @RequestLine("GET /api-products?offset={offset}&limit={limit}")
         Response getApiProducts(@Param("auth_token") String authToken, @Param("offset") int offset, @Param("limit")
                 int limit);
+
+        @Headers({ "Authorization: basic {auth_token}",
+                "Content-Type: application/soap+xml;charset=UTF-8;action=\"urn:getUserProfile\"" })
+        @RequestLine("POST /services/UserProfileMgtService.UserProfileMgtServiceHttpsSoap12Endpoint")
+        @Body(PAYLOAD)
+        Response getUserInfo(@Param("auth_token") String authToken, @Param("username") String username);
 
         /**
          * Get list of APIs.

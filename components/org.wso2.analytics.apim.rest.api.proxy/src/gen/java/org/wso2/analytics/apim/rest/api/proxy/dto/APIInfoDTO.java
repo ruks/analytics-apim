@@ -17,7 +17,7 @@ public class APIInfoDTO   {
   private String name = null;
 
   @SerializedName("version")
-  private String version = "1.0.0"; // setting default value to support api-products
+  private String version = null;
 
   @SerializedName("provider")
   private String provider = null;

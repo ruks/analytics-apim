@@ -41,7 +41,7 @@ import CustomTable from './CustomTable';
 export default function APIMOverallApiUsage(props) {
     const {
         themeName, width, height, limit, apiCreatedBy, usageData1, usageData2, metadata, chartConfig,
-        apiCreatedHandleChange, limitHandleChange, inProgress, selectedAPIChangeCallback,
+        apiCreatedHandleChange, limitHandleChange, inProgress, selectedAPIChangeCallback, publishAPIInfo,
     } = props;
     const styles = {
         headingWrapper: {
@@ -232,6 +232,7 @@ export default function APIMOverallApiUsage(props) {
                                     <CustomTable
                                         data={usageData2}
                                         callBack={selectedAPIChangeCallback}
+                                        publishAPIInfo={publishAPIInfo}
                                     />
                                 </div>
                             )
@@ -258,4 +259,5 @@ APIMOverallApiUsage.propTypes = {
     limitHandleChange: PropTypes.func.isRequired,
     selectedAPIChangeCallback: PropTypes.func.isRequired,
     inProgress: PropTypes.bool.isRequired,
+    publishAPIInfo: PropTypes.func.isRequired,
 };

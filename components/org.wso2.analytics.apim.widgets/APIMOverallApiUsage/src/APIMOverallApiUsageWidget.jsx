@@ -164,6 +164,7 @@ class APIMOverallApiUsageWidget extends Widget {
         this.assembleApiIdQuery = this.assembleApiIdQuery.bind(this);
         this.handleApiIdReceived = this.handleApiIdReceived.bind(this);
         this.selectedAPIChangeCallback = this.selectedAPIChangeCallback.bind(this);
+        this.publishAPIInfo = this.publishAPIInfo.bind(this);
     }
 
     componentWillMount() {
@@ -545,6 +546,13 @@ class APIMOverallApiUsageWidget extends Widget {
         this.setState({ usageData1: usage, apiIdMap: idMap });
     };
 
+    publishAPIInfo = (api, version) => {
+        const message = { type: 'apiInfo', api, version };
+        console.log("sending event")
+        console.log(message)
+        super.publish(message);
+    };
+
     /**
      * @inheritDoc
      * @returns {ReactElement} Render the APIM Overall Api Usage widget
@@ -620,6 +628,7 @@ class APIMOverallApiUsageWidget extends Widget {
                                 apiCreatedHandleChange={this.apiCreatedHandleChange}
                                 limitHandleChange={this.limitHandleChange}
                                 selectedAPIChangeCallback={this.selectedAPIChangeCallback}
+                                publishAPIInfo={this.publishAPIInfo}
                             />
                         )
                     }

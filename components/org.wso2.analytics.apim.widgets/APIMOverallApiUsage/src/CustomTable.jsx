@@ -30,7 +30,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
+import Link from '@material-ui/core/Link';
 import CustomTableHead from './CustomTableHead';
+
 /**
  * Compare two values and return the result
  * @param {object} a - data field
@@ -191,6 +193,19 @@ class CustomTable extends React.Component {
         this.setState({ query: event.target.value });
     };
 
+    handleLinkOnClick = (event) => {
+        const apiData = event.target.getAttribute('apiname');
+        const apiname = apiData.split(' ')[0]
+        const apiVersion = event.target.getAttribute('apiVersion');
+        window.link=event;
+        window.link1=event.target;
+        console.log(event);
+        const { publishAPIInfo } = this.props;
+        publishAPIInfo(apiname, apiVersion);
+        console.log('click');
+        window.location = '#api_usage_by_application';
+    };
+
     handleSelectedAPIChange = (event) => {
         const { selectedAPIs, selectedAPIChangeCallback } = this.state;
         const tickedApi = event.target.value;
@@ -285,7 +300,16 @@ class CustomTable extends React.Component {
                                                         option.apiname + ':' + option.apiVersion,
                                                     )}
                                                 />
-                                                {option.apiname}
+                                                <Link
+                                                    // href='#'
+                                                    onClick={this.handleLinkOnClick}
+                                                    variant='body2'
+                                                    style={{ color: '#FFF', cursor: 'pointer' }}
+                                                    apiname={option.apiname}
+                                                    apiVersion={option.apiVersion}
+                                                >
+                                                    {option.apiname}
+                                                </Link>
                                             </TableCell>
                                             <TableCell component='th' scope='row' numeric>
                                                 {option.apiVersion}
@@ -339,6 +363,7 @@ CustomTable.propTypes = {
     data: PropTypes.instanceOf(Object).isRequired,
     classes: PropTypes.instanceOf(Object).isRequired,
     callBack: PropTypes.func.isRequired,
+    publishAPIInfo: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(CustomTable);

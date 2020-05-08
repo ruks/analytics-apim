@@ -15,6 +15,7 @@
 */
 package org.wso2.analytics.apim.rest.api.proxy.internal;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -23,6 +24,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.config.provider.ConfigProvider;
+import org.wso2.carbon.datasource.core.api.DataSourceService;
+import org.wso2.carbon.datasource.core.exception.DataSourceException;
 
 /**
  * Service component to get Carbon Config Provider OSGi service.
@@ -33,6 +36,8 @@ import org.wso2.carbon.config.provider.ConfigProvider;
         immediate = true
 )
 public class ServiceComponent {
+    private HikariDataSource dsObject;
+
     @Activate
     protected void start(BundleContext bundleContext) {
     }
@@ -51,5 +56,24 @@ public class ServiceComponent {
 
     protected void unregisterConfigProvider(ConfigProvider client) {
         ServiceHolder.getInstance().setConfigProvider(null);
+    }
+
+    @Reference(
+            name = "org.wso2.carbon.datasource.DataSourceService",
+            service = DataSourceService.class,
+            cardinality = ReferenceCardinality.AT_LEAST_ONE,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unregisterDataSourceService"
+    )
+    protected void onDataSourceServiceReady(DataSourceService service) {
+
+        try {
+            dsObject = (HikariDataSource) service.getDataSource("AM_DB");
+            ServiceHolder.getInstance().setDataSource(dsObject);
+        } catch (DataSourceException e) {
+        }
+    }
+
+    protected void unregisterDataSourceService(DataSourceService dataSourceService) {
     }
 }

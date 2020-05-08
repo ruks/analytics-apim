@@ -92,7 +92,7 @@ export default function APIMApiUsage(props) {
                 padding: '20px',
             }}
             >
-                <div style={styles.headingWrapper}>
+                <div style={styles.headingWrapper} id='api_usage_by_application'>
                     <h3 style={{
                         borderBottom: themeName === 'dark' ? '1px solid #fff' : '1px solid #02212f',
                         paddingBottom: '10px',
